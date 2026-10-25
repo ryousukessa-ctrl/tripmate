@@ -1,171 +1,179 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#183d35">
-<title>TripMate｜旅行プランナー</title>
+<title>TripMate</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#1b2924;background:#f3f6f3}
+:root{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#20332a;background:#f3f6f2}
 *{box-sizing:border-box}
 body{margin:0}
-header{background:#183d35;color:#fff;padding:22px 18px}
-header h1{margin:0;font-size:27px}
-header p{margin:5px 0 0;color:#d5e6dc;font-size:13px}
-main{max-width:720px;margin:auto;padding:15px 12px 48px}
-.card{background:#fff;border-radius:16px;padding:17px;margin-bottom:13px;box-shadow:0 3px 12px #1b292408}
-h2{font-size:17px;margin:0 0 12px}
-label{display:block;font-size:13px;margin:10px 0 5px;color:#42564b}
-input,select,textarea,button{font:inherit}
-input,select,textarea{width:100%;padding:11px;border:1px solid #d6dfd8;border-radius:9px;background:#fff;color:#1b2924}
-textarea{min-height:65px}
-button{border:0;border-radius:10px;background:#246b4c;color:#fff;padding:12px 14px;font-weight:650;cursor:pointer}
-button.secondary{background:#e8efe9;color:#234b37}
-button.danger{background:#fff0ee;color:#9b3025}
+header{background:#183d35;color:white;padding:22px 18px}
+header h1{margin:0;font-size:28px}
+header p{margin:5px 0 0;color:#d6e5dc;font-size:13px}
+main{max-width:720px;margin:auto;padding:14px 12px 45px}
+.card{background:white;border-radius:16px;padding:17px;margin-bottom:13px;box-shadow:0 3px 12px #102c1a08}
+h2{font-size:17px;margin:0 0 13px}
+label{display:block;font-size:13px;color:#607166;margin:10px 0 5px}
+input,textarea,select,button{font:inherit}
+input,textarea,select{width:100%;padding:11px;border:1px solid #d7e0d8;border-radius:9px;background:white;color:#20332a}
+textarea{min-height:65px;resize:vertical}
+button{border:0;border-radius:10px;padding:11px 13px;background:#246b4c;color:white;font-weight:650;cursor:pointer}
+button.secondary{background:#e9f0e9;color:#24533b}
+button.danger{background:#fff0ed;color:#9a3025}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .actions{display:flex;gap:8px;margin-top:12px}
-.actions>*{flex:1}
-.status{white-space:pre-wrap;overflow-wrap:anywhere;background:#edf5ee;border-radius:9px;padding:11px;font-size:13px;margin:10px 0}
-.status.error{background:#fff0ee;color:#9b3025}
-.muted,small{color:#718078;font-size:12px}
+.actions button{flex:1}
+.status{white-space:pre-wrap;overflow-wrap:anywhere;padding:11px;background:#eaf3eb;border-radius:9px;font-size:13px;margin-bottom:13px}
+.status.error{background:#fff0ed;color:#982c20}
+.muted,small{font-size:12px;color:#748178}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #edf0ed}
+.item:last-child{border-bottom:0}
+.item p{white-space:pre-wrap;overflow-wrap:anywhere;margin:5px 0 0;font-size:13px;color:#6d7b71}
+.item button{font-size:12px;padding:7px 10px;flex-shrink:0}
+.total{font-size:27px;font-weight:750}
+.check{display:flex;align-items:center;gap:10px;padding:9px 0}
+.check input{width:19px}
+.check span{flex:1;overflow-wrap:anywhere}
 .hidden{display:none!important}
-.item{border-bottom:1px solid #edf1ed;padding:11px 0;display:flex;justify-content:space-between;gap:10px}
-.item:last-child{border:0}
-.item p{font-size:13px;color:#64736a;margin:5px 0 0;white-space:pre-wrap}
-.item button{padding:7px 10px;font-size:12px;flex-shrink:0}
-.total{font-size:26px;font-weight:750}
-.check{display:flex;align-items:center;gap:9px;padding:8px 0}
-.check input{width:18px}
-.check span{flex:1}
-hr{border:0;border-top:1px solid #e8eee8;margin:16px 0}
 </style>
 </head>
 <body>
 <header>
-<h1>✈️ TripMate</h1>
-<p>ふたりの旅行を、ひとつの場所に。</p>
+  <h1>✈️ TripMate</h1>
+  <p>ふたりの旅行を、ひとつの場所に。</p>
 </header>
+
 <main>
-<div id="status" class="status">起動しています…</div>
+  <div id="status" class="status">アプリを起動しています…</div>
 
-<section class="card" id="authCard">
-<h2>ログイン・新規登録</h2>
-<p class="muted">メールアドレスと6文字以上のパスワードを入力してください。</p>
-<label for="email">メールアドレス</label>
-<input id="email" type="email" autocomplete="email" placeholder="you@example.com">
-<label for="password">パスワード</label>
-<input id="password" type="password" autocomplete="new-password" minlength="6">
-<div class="actions">
-<button id="login">ログイン</button>
-<button id="signup" class="secondary">新規登録</button>
-</div>
-</section>
+  <section class="card">
+    <h2>🧳 旅行を作成</h2>
+    <form id="createForm">
+      <label for="title">旅行名</label>
+      <input id="title" required maxlength="100" placeholder="例：スイス絶景旅行">
 
-<section id="app" class="hidden">
-<section class="card">
-<div class="row" style="align-items:center">
-<div><b>ログイン中</b><p id="user" class="muted"></p></div>
-<button id="logout" class="secondary">ログアウト</button>
-</div>
-</section>
+      <label for="destination">行き先</label>
+      <input id="destination" required maxlength="150" placeholder="例：スイス">
 
-<section class="card">
-<h2>＋ 旅行を作成</h2>
-<form id="create">
-<label for="title">旅行名</label>
-<input id="title" required maxlength="100" placeholder="例：スイス絶景旅行">
-<label for="destination">行き先</label>
-<input id="destination" required maxlength="150" placeholder="例：スイス">
-<div class="row">
-<div><label for="start">出発日</label><input id="start" type="date"></div>
-<div><label for="end">帰宅日</label><input id="end" type="date"></div>
-</div>
-<div class="row">
-<div><label for="people">人数</label><input id="people" type="number" min="1" max="30" value="2" required></div>
-<div><label for="budget">予算（円）</label><input id="budget" type="number" min="0" value="200000"></div>
-</div>
-<button style="width:100%;margin-top:13px">旅行を作成</button>
-</form>
-</section>
+      <div class="row">
+        <div>
+          <label for="startDate">出発日</label>
+          <input id="startDate" type="date">
+        </div>
+        <div>
+          <label for="endDate">帰宅日</label>
+          <input id="endDate" type="date">
+        </div>
+      </div>
 
-<section class="card">
-<h2>あなたの旅行</h2>
-<select id="tripSelect"><option value="">旅行を読み込み中…</option></select>
-<div class="actions">
-<button id="refresh" class="secondary">再読み込み</button>
-<button id="delete" class="danger">旅行を削除</button>
-</div>
-</section>
+      <div class="row">
+        <div>
+          <label for="people">人数</label>
+          <input id="people" type="number" min="1" max="30" value="2" required>
+        </div>
+        <div>
+          <label for="budget">予算（円）</label>
+          <input id="budget" type="number" min="0" value="200000">
+        </div>
+      </div>
+      <button style="width:100%;margin-top:13px">＋ 旅行を作成</button>
+    </form>
+  </section>
 
-<div id="detail" class="hidden">
-<section class="card">
-<h2 id="tripHeading">旅行詳細</h2>
-<p id="tripMeta" class="muted"></p>
-<div class="row">
-<div><label for="editDestination">行き先</label><input id="editDestination"></div>
-<div><label for="editPeople">人数</label><input id="editPeople" type="number" min="1" max="30"></div>
-<div><label for="editStart">出発日</label><input id="editStart" type="date"></div>
-<div><label for="editEnd">帰宅日</label><input id="editEnd" type="date"></div>
-<div><label for="editBudget">予算（円）</label><input id="editBudget" type="number" min="0"></div>
-</div>
-<button id="saveDetails" style="width:100%;margin-top:12px">概要を保存</button>
-</section>
+  <section class="card">
+    <h2>🗺️ 旅行一覧</h2>
+    <select id="tripSelect">
+      <option value="">旅行を読み込み中…</option>
+    </select>
+    <div class="actions">
+      <button id="refresh" class="secondary" type="button">再読み込み</button>
+      <button id="deleteTrip" class="danger" type="button">旅行を削除</button>
+    </div>
+  </section>
 
-<section class="card">
-<h2>💰 費用</h2>
-<div id="total" class="total">¥0</div>
-<p id="budgetInfo" class="muted"></p>
-<form id="expenseForm">
-<label for="expenseName">費用の内容</label>
-<input id="expenseName" required placeholder="例：ホテル">
-<label for="expenseAmount">金額（円）</label>
-<input id="expenseAmount" type="number" min="0" required>
-<button style="width:100%;margin-top:10px">費用を追加</button>
-</form>
-<div id="expenses"></div>
-</section>
+  <div id="detail" class="hidden">
+    <section class="card">
+      <h2 id="tripTitle">旅行の詳細</h2>
+      <p id="tripMeta" class="muted"></p>
+      <div class="row">
+        <div>
+          <label for="editDestination">行き先</label>
+          <input id="editDestination">
+        </div>
+        <div>
+          <label for="editPeople">人数</label>
+          <input id="editPeople" type="number" min="1" max="30">
+        </div>
+        <div>
+          <label for="editStart">出発日</label>
+          <input id="editStart" type="date">
+        </div>
+        <div>
+          <label for="editEnd">帰宅日</label>
+          <input id="editEnd" type="date">
+        </div>
+      </div>
+      <label for="editBudget">予算（円）</label>
+      <input id="editBudget" type="number" min="0">
+      <button id="saveTrip" style="width:100%;margin-top:12px" type="button">旅行情報を保存</button>
+    </section>
 
-<section class="card">
-<h2>🗓️ 日程表</h2>
-<form id="eventForm">
-<label for="eventDate">日付</label>
-<input id="eventDate" type="date" required>
-<label for="eventTime">時間</label>
-<input id="eventTime" type="time">
-<label for="eventName">予定・場所</label>
-<input id="eventName" required placeholder="例：湖畔を散歩">
-<label for="eventNote">メモ</label>
-<textarea id="eventNote" placeholder="住所、予約情報など"></textarea>
-<button style="width:100%;margin-top:10px">日程に追加</button>
-</form>
-<div id="events"></div>
-</section>
+    <section class="card">
+      <h2>💰 費用管理</h2>
+      <div id="total" class="total">¥0</div>
+      <p id="budgetInfo" class="muted"></p>
+      <form id="expenseForm">
+        <label for="expenseName">費用の内容</label>
+        <input id="expenseName" required placeholder="例：ホテル">
+        <label for="expenseAmount">金額（円）</label>
+        <input id="expenseAmount" type="number" min="0" required>
+        <button style="width:100%;margin-top:10px">費用を追加</button>
+      </form>
+      <div id="expenses"></div>
+    </section>
 
-<section class="card">
-<h2>📍 行きたい場所</h2>
-<form id="wishForm">
-<label for="wishName">場所の名前</label>
-<input id="wishName" required placeholder="例：展望台">
-<label for="wishNote">メモ・URL</label>
-<input id="wishNote">
-<button style="width:100%;margin-top:10px">候補を追加</button>
-</form>
-<div id="wishes"></div>
-</section>
+    <section class="card">
+      <h2>🗓️ 日程表</h2>
+      <form id="eventForm">
+        <label for="eventDate">日付</label>
+        <input id="eventDate" type="date" required>
+        <label for="eventTime">時間</label>
+        <input id="eventTime" type="time">
+        <label for="eventName">予定・場所</label>
+        <input id="eventName" required placeholder="例：湖畔を散歩">
+        <label for="eventNote">メモ</label>
+        <textarea id="eventNote" placeholder="住所、予約情報など"></textarea>
+        <button style="width:100%;margin-top:10px">日程に追加</button>
+      </form>
+      <div id="events"></div>
+    </section>
 
-<section class="card">
-<h2>🎒 持ち物リスト</h2>
-<form id="packForm">
-<label for="packName">持ち物</label>
-<input id="packName" required placeholder="例：充電器">
-<button style="width:100%;margin-top:10px">持ち物を追加</button>
-</form>
-<div id="packs"></div>
-</section>
-</div>
-</section>
+    <section class="card">
+      <h2>📍 行きたい場所</h2>
+      <form id="wishForm">
+        <label for="wishName">場所の名前</label>
+        <input id="wishName" required placeholder="例：展望台">
+        <label for="wishNote">メモ・URL</label>
+        <input id="wishNote" placeholder="住所やWebサイト">
+        <button style="width:100%;margin-top:10px">候補を追加</button>
+      </form>
+      <div id="wishes"></div>
+    </section>
+
+    <section class="card">
+      <h2>🎒 持ち物リスト</h2>
+      <form id="packForm">
+        <label for="packName">持ち物</label>
+        <input id="packName" required placeholder="例：充電器">
+        <button style="width:100%;margin-top:10px">持ち物を追加</button>
+      </form>
+      <div id="packs"></div>
+    </section>
+  </div>
 </main>
 
 <script>
@@ -173,350 +181,359 @@ const SUPABASE_URL = "https://ugxmmqwhkrzjesmvanfj.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2i1Q3OZyKnQM_0BBCIuolw_wx58hShs";
 
 const $ = id => document.getElementById(id);
-let sb = null, user = null, trips = [], trip = null, busy = false;
+let db, currentUser = null, trips = [], trip = null;
+let saving = false;
 
-function status(msg, isError = false) {
-  $('status').textContent = msg;
-  $('status').classList.toggle('error', isError);
+function message(text, error = false) {
+  $("status").textContent = text;
+  $("status").classList.toggle("error", error);
 }
 
-function esc(v) {
-  return String(v ?? '').replace(/[&<>"']/g, c => ({
-    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
   }[c]));
 }
 
-function yen(v) {
-  return '¥' + Number(v || 0).toLocaleString('ja-JP');
+function money(value) {
+  return "¥" + Number(value || 0).toLocaleString("ja-JP");
 }
 
-function arrays(k) {
-  return Array.isArray(trip?.[k]) ? trip[k] : [];
+function list(key) {
+  return Array.isArray(trip?.[key]) ? trip[key] : [];
 }
 
-function show() {
-  $('authCard').classList.toggle('hidden', !!user);
-  $('app').classList.toggle('hidden', !user);
-  $('user').textContent = user ? `${user.email} · ユーザーID: ${user.id}` : '';
+function newId() {
+  return crypto.randomUUID();
 }
 
-async function safe(fn) {
+async function run(action) {
   try {
-    await fn();
+    await action();
   } catch (e) {
     console.error(e);
-    status('エラー：' + (e?.message || String(e)), true);
+    message("エラー：" + (e?.message || String(e)), true);
   }
 }
 
-async function auth(kind) {
-  await safe(async () => {
-    if (!sb) throw Error('Supabaseの設定が未完了です。');
-    const email = $('email').value.trim();
-    const password = $('password').value;
-    if (!email || password.length < 6) {
-      throw Error('メールアドレスと6文字以上のパスワードを入力してください。');
-    }
-    const r = kind === 'signup'
-      ? await sb.auth.signUp({email, password})
-      : await sb.auth.signInWithPassword({email, password});
-    if (r.error) throw r.error;
-
-    if (kind === 'signup' && !r.data.session) {
-      status('登録リクエストを受け付けました。Supabaseのメール確認が有効な場合は、確認メールのリンクを開いてからログインしてください。');
-      return;
-    }
-
-    user = r.data.user || r.data.session?.user || null;
-    show();
-    if (user) await loadTrips(false);
-    status(kind === 'signup' ? '登録しました。' : 'ログインしました。');
-  });
-}
-
-$('login').onclick = () => auth('login');
-$('signup').onclick = () => auth('signup');
-
-$('logout').onclick = () => safe(async () => {
-  const r = await sb.auth.signOut();
-  if (r.error) throw r.error;
-  user = null;
-  trip = null;
-  trips = [];
-  show();
-  $('detail').classList.add('hidden');
-  status('ログアウトしました。');
-});
-
-async function loadTrips(keep = true) {
-  if (!sb || !user || busy) return;
-  busy = true;
+async function start() {
   try {
-    const old = keep ? (trip?.id || $('tripSelect').value) : '';
-    const r = await sb.from('trips').select('*').order('updated_at', {ascending:false});
-    if (r.error) throw r.error;
-
-    trips = r.data || [];
-    $('tripSelect').innerHTML =
-      '<option value="">旅行を選択してください</option>' +
-      trips.map(t => `<option value="${esc(t.id)}">${esc(t.title)} · ${esc(t.destination)}</option>`).join('');
-
-    if (old && trips.some(t => t.id === old)) {
-      trip = trips.find(t => t.id === old);
-      $('tripSelect').value = trip.id;
-      render();
-    } else {
-      trip = null;
-      $('detail').classList.add('hidden');
+    if (!window.supabase) {
+      throw Error("Supabaseのライブラリを読み込めません。通信を確認してください。");
     }
-    status(`旅行を${trips.length}件読み込みました。`);
+
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+    const {data, error} = await db.auth.getSession();
+    if (error) throw error;
+
+    currentUser = data.session?.user || null;
+
+    if (!currentUser) {
+      const result = await db.auth.signInAnonymously();
+      if (result.error) throw result.error;
+      currentUser = result.data.user || result.data.session?.user || null;
+    }
+
+    if (!currentUser) throw Error("匿名ユーザーを作成できませんでした。");
+
+    message("接続しました。旅行データを読み込んでいます…");
+    await loadTrips();
+
+    db.auth.onAuthStateChange((_event, session) => {
+      currentUser = session?.user || null;
+      if (!currentUser) {
+        trip = null;
+        trips = [];
+        $("detail").classList.add("hidden");
+        message("認証セッションがありません。ページを再読み込みしてください。", true);
+      }
+    });
   } catch (e) {
-    status('旅行の読み込み失敗：' + e.message, true);
-  } finally {
-    busy = false;
+    console.error(e);
+    message(
+      "初期化エラー：" + (e?.message || String(e)) +
+      "\nSupabaseで匿名認証が有効か、公開キーとデータベースの設定が正しいか確認してください。",
+      true
+    );
   }
 }
 
-$('refresh').onclick = () => loadTrips(true);
-$('tripSelect').onchange = () => {
-  trip = trips.find(t => t.id === $('tripSelect').value) || null;
+async function loadTrips() {
+  if (!currentUser) throw Error("ユーザーの認証情報がありません。");
+
+  const {data, error} = await db.from("trips")
+    .select("*")
+    .order("updated_at", {ascending:false});
+
+  if (error) throw error;
+
+  trips = data || [];
+  const previousId = trip?.id || $("tripSelect").value;
+
+  $("tripSelect").innerHTML =
+    '<option value="">旅行を選択してください</option>' +
+    trips.map(t =>
+      `<option value="${esc(t.id)}">${esc(t.title)} — ${esc(t.destination)}</option>`
+    ).join("");
+
+  if (previousId && trips.some(t => t.id === previousId)) {
+    trip = trips.find(t => t.id === previousId);
+    $("tripSelect").value = trip.id;
+    render();
+  } else {
+    trip = null;
+    $("detail").classList.add("hidden");
+  }
+
+  message(`旅行を${trips.length}件読み込みました。`);
+}
+
+$("refresh").onclick = () => run(loadTrips);
+
+$("tripSelect").onchange = () => {
+  trip = trips.find(t => t.id === $("tripSelect").value) || null;
   render();
 };
 
-$('create').onsubmit = e => safe(async () => {
+$("createForm").onsubmit = e => run(async () => {
   e.preventDefault();
-  if (!user) throw Error('ログインしてください。');
-  const start = $('start').value || null;
-  const end = $('end').value || null;
-  if (start && end && end < start) throw Error('帰宅日は出発日以降にしてください。');
+  if (!currentUser) throw Error("認証されていません。");
 
-  const row = {
-    owner_id:user.id,
-    members:[user.id],
-    title:$('title').value.trim(),
-    destination:$('destination').value.trim(),
-    trip_type:'海外',
-    start_date:start,
-    end_date:end,
-    people:Number($('people').value),
-    budget:Number($('budget').value || 0),
-    itinerary:[],
-    wishlist:[],
-    packing:[],
-    expenses:[]
+  const start = $("startDate").value || null;
+  const end = $("endDate").value || null;
+  if (start && end && end < start) {
+    throw Error("帰宅日は出発日以降にしてください。");
+  }
+
+  const record = {
+    owner_id: currentUser.id,
+    members: [currentUser.id],
+    title: $("title").value.trim(),
+    destination: $("destination").value.trim(),
+    trip_type: "旅行",
+    start_date: start,
+    end_date: end,
+    people: Number($("people").value),
+    budget: Number($("budget").value || 0),
+    itinerary: [],
+    wishlist: [],
+    packing: [],
+    expenses: [],
+    updated_at: new Date().toISOString()
   };
 
-  const r = await sb.from('trips').insert(row).select().single();
-  if (r.error) throw r.error;
+  const {data, error} = await db.from("trips")
+    .insert(record)
+    .select()
+    .single();
+
+  if (error) throw error;
+
   e.target.reset();
-  await loadTrips(false);
-  trip = trips.find(t => t.id === r.data.id) || r.data;
-  $('tripSelect').value = trip.id;
+  await loadTrips();
+  trip = trips.find(t => t.id === data.id) || data;
+  $("tripSelect").value = trip.id;
   render();
-  status('旅行を作成しました。');
+  message("旅行を作成しました。");
 });
+
+async function save(patch, text = "保存しました。") {
+  if (!trip) throw Error("先に旅行を選択してください。");
+  if (saving) return;
+  saving = true;
+
+  try {
+    const {data, error} = await db.from("trips")
+      .update({...patch, updated_at:new Date().toISOString()})
+      .eq("id", trip.id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    trip = data;
+    trips = trips.map(t => t.id === data.id ? data : t);
+    render();
+    message(text);
+  } finally {
+    saving = false;
+  }
+}
 
 function render() {
   if (!trip) {
-    $('detail').classList.add('hidden');
+    $("detail").classList.add("hidden");
     return;
   }
-  $('detail').classList.remove('hidden');
-  $('tripHeading').textContent = trip.title;
-  $('tripMeta').textContent = `${trip.destination} · ${trip.people}人 · ${trip.start_date || '日付未定'}〜${trip.end_date || '未定'}`;
-  $('editDestination').value = trip.destination || '';
-  $('editPeople').value = trip.people || 2;
-  $('editStart').value = trip.start_date || '';
-  $('editEnd').value = trip.end_date || '';
-  $('editBudget').value = trip.budget || 0;
+
+  $("detail").classList.remove("hidden");
+  $("tripTitle").textContent = trip.title;
+  $("tripMeta").textContent =
+    `${trip.destination} · ${trip.people}人 · ${trip.start_date || "日付未定"}〜${trip.end_date || "未定"}`;
+
+  $("editDestination").value = trip.destination || "";
+  $("editPeople").value = trip.people || 1;
+  $("editStart").value = trip.start_date || "";
+  $("editEnd").value = trip.end_date || "";
+  $("editBudget").value = trip.budget || 0;
+
   renderExpenses();
   renderEvents();
   renderWishes();
   renderPacks();
 }
 
-async function save(patch, msg = '保存しました。') {
-  if (!trip) throw Error('先に旅行を選択してください。');
-  const r = await sb.from('trips')
-    .update({...patch, updated_at:new Date().toISOString()})
-    .eq('id', trip.id)
-    .select()
-    .single();
-  if (r.error) throw r.error;
-  trip = r.data;
-  trips = trips.map(t => t.id === trip.id ? trip : t);
-  render();
-  status(msg);
-}
+$("saveTrip").onclick = () => run(async () => {
+  const start = $("editStart").value || null;
+  const end = $("editEnd").value || null;
 
-$('saveDetails').onclick = () => safe(async () => {
-  const start = $('editStart').value || null;
-  const end = $('editEnd').value || null;
-  if (start && end && end < start) throw Error('帰宅日は出発日以降にしてください。');
+  if (start && end && end < start) {
+    throw Error("帰宅日は出発日以降にしてください。");
+  }
+
   await save({
-    destination:$('editDestination').value.trim(),
-    people:Number($('editPeople').value),
-    start_date:start,
-    end_date:end,
-    budget:Number($('editBudget').value || 0)
-  }, '旅行概要を保存しました。');
+    destination: $("editDestination").value.trim(),
+    people: Number($("editPeople").value),
+    start_date: start,
+    end_date: end,
+    budget: Number($("editBudget").value || 0)
+  }, "旅行情報を保存しました。");
 });
 
 function renderExpenses() {
-  const xs = arrays('expenses');
-  const sum = xs.reduce((a, x) => a + Number(x.amount || 0), 0);
-  $('total').textContent = yen(sum);
-  $('budgetInfo').textContent = `予算 ${yen(trip.budget)} · 残り ${yen(Number(trip.budget || 0) - sum)}`;
-  $('expenses').innerHTML = xs.map((x, i) =>
-    `<div class="item"><div>${esc(x.name)}<p>${yen(x.amount)}</p></div><button class="danger" data-exp="${i}">削除</button></div>`
-  ).join('') || '<p class="muted">費用はまだありません。</p>';
+  const items = list("expenses");
+  const total = items.reduce((sum, x) => sum + Number(x.amount || 0), 0);
+  $("total").textContent = money(total);
+  $("budgetInfo").textContent =
+    `予算 ${money(trip.budget)} ／ 残り ${money(Number(trip.budget || 0) - total)}`;
+
+  $("expenses").innerHTML = items.map((x, i) =>
+    `<div class="item"><div><b>${esc(x.name)}</b><p>${money(x.amount)}</p></div><button class="danger" data-exp="${i}">削除</button></div>`
+  ).join("") || '<p class="muted">費用はまだありません。</p>';
 }
 
-$('expenseForm').onsubmit = e => safe(async () => {
+$("expenseForm").onsubmit = e => run(async () => {
   e.preventDefault();
   await save({
-    expenses:[...arrays('expenses'), {
-      id:crypto.randomUUID(),
-      name:$('expenseName').value.trim(),
-      amount:Number($('expenseAmount').value)
+    expenses: [...list("expenses"), {
+      id:newId(),
+      name:$("expenseName").value.trim(),
+      amount:Number($("expenseAmount").value)
     }]
-  }, '費用を追加しました。');
+  }, "費用を追加しました。");
   e.target.reset();
 });
 
-$('expenses').onclick = e => safe(async () => {
+$("expenses").onclick = e => run(async () => {
   if (e.target.dataset.exp === undefined) return;
+  const index = Number(e.target.dataset.exp);
   await save({
-    expenses:arrays('expenses').filter((_, i) => i !== Number(e.target.dataset.exp))
-  }, '費用を削除しました。');
+    expenses: list("expenses").filter((_, i) => i !== index)
+  }, "費用を削除しました。");
 });
 
 function renderEvents() {
-  $('events').innerHTML = arrays('itinerary').map((x, i) =>
-    `<div class="item"><div><b>${esc(x.date)} ${esc(x.time || '')}</b><p><b>${esc(x.name)}</b><br>${esc(x.note || '')}</p></div><button class="danger" data-event="${i}">削除</button></div>`
-  ).join('') || '<p class="muted">日程はまだありません。</p>';
+  $("events").innerHTML = list("itinerary").map((x, i) =>
+    `<div class="item"><div><b>${esc(x.date)} ${esc(x.time || "")}</b><p><b>${esc(x.name)}</b><br>${esc(x.note || "")}</p></div><button class="danger" data-event="${i}">削除</button></div>`
+  ).join("") || '<p class="muted">日程はまだありません。</p>';
 }
 
-$('eventForm').onsubmit = e => safe(async () => {
+$("eventForm").onsubmit = e => run(async () => {
   e.preventDefault();
   await save({
-    itinerary:[...arrays('itinerary'), {
-      id:crypto.randomUUID(),
-      date:$('eventDate').value,
-      time:$('eventTime').value,
-      name:$('eventName').value.trim(),
-      note:$('eventNote').value.trim()
+    itinerary: [...list("itinerary"), {
+      id:newId(),
+      date:$("eventDate").value,
+      time:$("eventTime").value,
+      name:$("eventName").value.trim(),
+      note:$("eventNote").value.trim()
     }]
-  }, '日程を追加しました。');
+  }, "日程を追加しました。");
   e.target.reset();
 });
 
-$('events').onclick = e => safe(async () => {
+$("events").onclick = e => run(async () => {
   if (e.target.dataset.event === undefined) return;
+  const index = Number(e.target.dataset.event);
   await save({
-    itinerary:arrays('itinerary').filter((_, i) => i !== Number(e.target.dataset.event))
-  }, '日程を削除しました。');
+    itinerary: list("itinerary").filter((_, i) => i !== index)
+  }, "日程を削除しました。");
 });
 
 function renderWishes() {
-  $('wishes').innerHTML = arrays('wishlist').map((x, i) =>
-    `<div class="item"><div><b>${esc(x.name)}</b><p>${esc(x.note || '')}</p></div><button class="danger" data-wish="${i}">削除</button></div>`
-  ).join('') || '<p class="muted">候補はまだありません。</p>';
+  $("wishes").innerHTML = list("wishlist").map((x, i) =>
+    `<div class="item"><div><b>${esc(x.name)}</b><p>${esc(x.note || "")}</p></div><button class="danger" data-wish="${i}">削除</button></div>`
+  ).join("") || '<p class="muted">行きたい場所はまだありません。</p>';
 }
 
-$('wishForm').onsubmit = e => safe(async () => {
+$("wishForm").onsubmit = e => run(async () => {
   e.preventDefault();
   await save({
-    wishlist:[...arrays('wishlist'), {
-      id:crypto.randomUUID(),
-      name:$('wishName').value.trim(),
-      note:$('wishNote').value.trim()
+    wishlist: [...list("wishlist"), {
+      id:newId(),
+      name:$("wishName").value.trim(),
+      note:$("wishNote").value.trim()
     }]
-  }, '行きたい場所を追加しました。');
+  }, "行きたい場所を追加しました。");
   e.target.reset();
 });
 
-$('wishes').onclick = e => safe(async () => {
+$("wishes").onclick = e => run(async () => {
   if (e.target.dataset.wish === undefined) return;
+  const index = Number(e.target.dataset.wish);
   await save({
-    wishlist:arrays('wishlist').filter((_, i) => i !== Number(e.target.dataset.wish))
-  }, '候補を削除しました。');
+    wishlist: list("wishlist").filter((_, i) => i !== index)
+  }, "候補を削除しました。");
 });
 
 function renderPacks() {
-  $('packs').innerHTML = arrays('packing').map((x, i) =>
-    `<div class="check item"><input type="checkbox" data-check="${i}" ${x.done ? 'checked' : ''}><span style="${x.done ? 'text-decoration:line-through' : ''}">${esc(x.name)}</span><button class="danger" data-pack="${i}">削除</button></div>`
-  ).join('') || '<p class="muted">持ち物はまだありません。</p>';
+  $("packs").innerHTML = list("packing").map((x, i) =>
+    `<div class="check item"><input type="checkbox" data-check="${i}" ${x.done ? "checked" : ""}><span style="${x.done ? "text-decoration:line-through" : ""}">${esc(x.name)}</span><button class="danger" data-pack="${i}">削除</button></div>`
+  ).join("") || '<p class="muted">持ち物はまだありません。</p>';
 }
 
-$('packForm').onsubmit = e => safe(async () => {
+$("packForm").onsubmit = e => run(async () => {
   e.preventDefault();
   await save({
-    packing:[...arrays('packing'), {
-      id:crypto.randomUUID(),
-      name:$('packName').value.trim(),
+    packing: [...list("packing"), {
+      id:newId(),
+      name:$("packName").value.trim(),
       done:false
     }]
-  }, '持ち物を追加しました。');
+  }, "持ち物を追加しました。");
   e.target.reset();
 });
 
-$('packs').onclick = e => safe(async () => {
+$("packs").onclick = e => run(async () => {
   if (e.target.dataset.pack === undefined) return;
+  const index = Number(e.target.dataset.pack);
   await save({
-    packing:arrays('packing').filter((_, i) => i !== Number(e.target.dataset.pack))
-  }, '持ち物を削除しました。');
+    packing: list("packing").filter((_, i) => i !== index)
+  }, "持ち物を削除しました。");
 });
 
-$('packs').onchange = e => safe(async () => {
+$("packs").onchange = e => run(async () => {
   if (e.target.dataset.check === undefined) return;
-  const i = Number(e.target.dataset.check);
+  const index = Number(e.target.dataset.check);
   await save({
-    packing:arrays('packing').map((x, j) =>
-      j === i ? {...x, done:e.target.checked} : x
+    packing: list("packing").map((x, i) =>
+      i === index ? {...x, done:e.target.checked} : x
     )
-  }, '持ち物を更新しました。');
+  }, "持ち物を更新しました。");
 });
 
-$('delete').onclick = () => safe(async () => {
-  if (!trip) return;
-  if (trip.owner_id !== user.id) throw Error('作成者だけが削除できます。');
-  if (!confirm('この旅行を削除しますか？')) return;
-  const r = await sb.from('trips').delete().eq('id', trip.id);
-  if (r.error) throw r.error;
+$("deleteTrip").onclick = () => run(async () => {
+  if (!trip) throw Error("削除する旅行を選択してください。");
+  if (!confirm(`「${trip.title}」を削除しますか？`)) return;
+
+  const {error} = await db.from("trips").delete().eq("id", trip.id);
+  if (error) throw error;
+
   trip = null;
-  await loadTrips(false);
-  status('旅行を削除しました。');
+  await loadTrips();
+  message("旅行を削除しました。");
 });
-
-async function start() {
-  if (!window.supabase) {
-    status('Supabaseライブラリを読み込めません。通信を確認してください。', true);
-    return;
-  }
-  try {
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-    const r = await sb.auth.getSession();
-    if (r.error) throw r.error;
-    user = r.data.session?.user || null;
-    show();
-    if (user) await loadTrips(false);
-    else status('メールアドレスとパスワードを入力して新規登録してください。');
-
-    sb.auth.onAuthStateChange((_event, session) => {
-      user = session?.user || null;
-      show();
-      if (user) loadTrips(false);
-      else {
-        trip = null;
-        trips = [];
-        $('detail').classList.add('hidden');
-      }
-    });
-  } catch (e) {
-    status('初期化エラー：' + e.message, true);
-  }
-}
 
 start();
 </script>
